@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #upload-form {
+            margin-top: 20px;
+        }
+
+        #file-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #processing-mode {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #image-container {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        #original-image, #processed-image {
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Processing</h1>
+
+    <form id="upload-form">
+        <input type="file" id="file-input" accept="image/*" required onchange="displayOriginalImage()">
+        <select id="processing-mode" name="processing-mode">
+            <option value="grayscale">Grayscale</option>
+            <option value="sharpen">Sharpened Image</option>
+            <option value="sobel">Sobel Filter</option>
+
+            <option value="erosion">Erosion</option>
+            <option value="dilation">Dilation</option>
+            <option value="opening">Opening</option>
+            <option value="closing">Closing</option>
+            <option value="boundary-extraction">Boundary Extraction</option>
+            <option value="equalization-histogram">Equalization Histogram</option>
+            <option value="logarithmic-transformation">Logarithmic Transformation</option>
+            <option value="gamma-correction">Gamma Correction</option>
+        </select>
+        <button type="button" onclick="processImage()">Process Image</button>
+    </form>
+
+    <div id="image-container" style="display: none;">
+        <div id="original-image">
+            <h2>Original Image:</h2>
+            <img id="original-img" alt="Original Image">
+        </div>
+
+        <div id="processed-image">
+            <h2>Processed Image:</h2>
+            <img id="processed-img" alt="Processed Image">
+        </div>
+    </div>
+
+    <script>
+        let originalImageDisplayed = false;
+
+        function displayOriginalImage() {
+            const fileInput = document.getElementById('file-input');
+            const originalImg = document.getElementById('original-img');
+
+            // Display the original image
+            const originalFile = fileInput.files[0];
+            originalImg.src = URL.createObjectURL(originalFile);
+            document.getElementById('image-container').style.display = 'flex';
+            originalImageDisplayed = true;
+        }
+
+        async function processImage() {
+            if (!originalImageDisplayed) {
+                alert('Please select an image first.');
+                return;
+            }
+
+            const processedImg = document.getElementById('processed-img');
+
+            // Prepare FormData
+            const formData = new FormData();
+            const fileInput = document.getElementById('file-input');
+            const processingMode = document.getElementById('processing-mode').value;
+            formData.append('file', fileInput.files[0]);
+
+            // Send image to server for processing
+            const response = await fetch(`/process-image/?processing_mode=${processingMode}`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const processedImage = await response.blob();
+            // Display the processed image
+            processedImg.src = URL.createObjectURL(processedImage);
+        }
+    </script>
+</body>
+</html>
