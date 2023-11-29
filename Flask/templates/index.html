@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing App</title>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+</head>
+<body>
+    <h1>Image Processing App</h1>
+    <form method="post" enctype="multipart/form-data">
+        <label for="image">Choose an image:</label>
+        <input type="file" name="image" accept="image/*" required>
+        <br>
+        <label for="algorithm">Choose an algorithm:</label>
+        <select name="algorithm" required>
+            <option value="grayscale">GrayScale Conversion Image</option>
+            <!-- Thêm các tùy chọn thuật toán khác ở đây -->
+        </select>
+        <br>
+        <input type="submit" value="Process Image">
+    </form>
+</body>
+</html>
